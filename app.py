@@ -21,15 +21,19 @@ PERSISTENT_DIR = "persistent_tmp"
 os.makedirs(PERSISTENT_DIR, exist_ok=True)
 
 st.title("Canola Green Bud Detection (YOLOv11 (advanced) + SAHI)")
-st.markdown("Upload images or a ZIP file, choose a model, and click Run to start inference.")
+st.markdown("Upload images or ZIP files, choose a model, and click Run to start inference.")
 
-# File uploader
-uploaded_file = st.file_uploader("Upload image or ZIP file", type=["jpg", "jpeg", "png", "zip"])
+# File uploader (multi-file enabled)
+uploaded_files = st.file_uploader(
+    "Upload images or ZIP files", type=["jpg", "jpeg", "png", "zip"], accept_multiple_files=True
+)
 
 # Model selector
-selected_model = st.selectbox("Select a model. Advanced ones offer better accuracy but take longer to run.", list(MODEL_MAP.keys()))
+selected_model = st.selectbox(
+    "Select a model. Advanced ones offer better accuracy but take longer to run.", list(MODEL_MAP.keys())
+)
 
-if st.button("Run") and uploaded_file:
+if st.button("Run") and uploaded_files:
     # Clear old runs and cached results
     if os.path.exists("runs"):
         shutil.rmtree("runs")
@@ -42,16 +46,18 @@ if st.button("Run") and uploaded_file:
         os.makedirs(input_dir, exist_ok=True)
 
         # Save uploaded content
-        if uploaded_file.name.endswith(".zip"):
-            zip_path = os.path.join(tmpdir, uploaded_file.name)
-            with open(zip_path, "wb") as f:
-                f.write(uploaded_file.read())
-            with zipfile.ZipFile(zip_path, 'r') as zip_ref:
-                zip_ref.extractall(input_dir)
-        else:
-            img_path = os.path.join(input_dir, uploaded_file.name)
-            with open(img_path, "wb") as f:
-                f.write(uploaded_file.read())
+        for uploaded_file in uploaded_files:
+            file_name = uploaded_file.name
+            if file_name.endswith(".zip"):
+                zip_path = os.path.join(tmpdir, file_name)
+                with open(zip_path, "wb") as f:
+                    f.write(uploaded_file.read())
+                with zipfile.ZipFile(zip_path, 'r') as zip_ref:
+                    zip_ref.extractall(input_dir)
+            else:
+                img_path = os.path.join(input_dir, file_name)
+                with open(img_path, "wb") as f:
+                    f.write(uploaded_file.read())
 
         # Image file filtering (case-insensitive)
         valid_exts = (".jpg", ".jpeg", ".png")
@@ -67,8 +73,8 @@ if st.button("Run") and uploaded_file:
         estimated_seconds = int(num_input_images * time_per_image)
         estimated_minutes = round(estimated_seconds / 60, 1)
 
-        st.info("🔍 Inference started. Please wait...")
-        st.warning(f"🕒 CPU inference. Estimated time: {estimated_minutes} minutes "
+        st.info("\U0001F50D Inference started. Please wait...")
+        st.warning(f"\U0001F552 CPU inference. Estimated time: {estimated_minutes} minutes "
                    f"({num_input_images} images, approx. {time_per_image} seconds per image)")
 
         # Slice size
@@ -117,8 +123,8 @@ if st.button("Run") and uploaded_file:
 
 # Show results (preserved after refresh)
 if "zip_path" in st.session_state:
-    st.success("✅ Inference complete. Preview and download results below.")
-    st.markdown(f"**📊 {st.session_state['num_images']} images analyzed, "
+    st.success("\u2705 Inference complete. Preview and download results below.")
+    st.markdown(f"**\U0001F4CA {st.session_state['num_images']} images analyzed, "
                 f"{st.session_state['num_boxes']} objects detected.**")
 
     for img_path in st.session_state["preview_images"]:
@@ -126,7 +132,7 @@ if "zip_path" in st.session_state:
 
     with open(st.session_state["zip_path"], "rb") as f:
         st.download_button(
-            label="📦 Download all results (labels + visuals)",
+            label="\U0001F4E6 Download all results (labels + visuals)",
             data=f,
             file_name="canola_detection_results.zip",
             mime="application/zip"
