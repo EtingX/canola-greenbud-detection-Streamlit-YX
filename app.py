@@ -69,7 +69,7 @@ if st.button("Run") and uploaded_files:
         num_input_images = len(image_files)
 
         # Estimate processing time
-        time_per_image = 30 if "advanced" in selected_model else 15
+        time_per_image = 45 if "advanced" in selected_model else 20
         estimated_seconds = int(num_input_images * time_per_image)
         estimated_minutes = round(estimated_seconds / 60, 1)
 
