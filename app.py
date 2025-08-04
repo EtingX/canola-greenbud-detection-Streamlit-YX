@@ -104,7 +104,6 @@ if st.button("Run") and uploaded_files:
         #     export_txt=True
         # )
         with st.spinner("🧠 Running model inference... Please wait."):
-            st.info("\U0001F50D Inference started. Please wait...")
             st.warning(f"\U0001F552 CPU inference. Estimated time: {estimated_minutes} minutes "
                        f"({num_input_images} images, approx. {time_per_image} seconds per image)")
 
