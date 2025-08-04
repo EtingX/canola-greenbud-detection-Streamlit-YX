@@ -83,26 +83,47 @@ if st.button("Run") and uploaded_files:
         estimated_seconds = int(num_input_images * time_per_image)
         estimated_minutes = round(estimated_seconds / 60, 1)
 
-        st.info("\U0001F50D Inference started. Please wait...")
-        st.warning(f"\U0001F552 CPU inference. Estimated time: {estimated_minutes} minutes "
-                   f"({num_input_images} images, approx. {time_per_image} seconds per image)")
+        # st.info("\U0001F50D Inference started. Please wait...")
+        # st.warning(f"\U0001F552 CPU inference. Estimated time: {estimated_minutes} minutes "
+        #            f"({num_input_images} images, approx. {time_per_image} seconds per image)")
+        #
+        # # Slice size
+        # slice_size = 960 if "960" in selected_model else 640
+        #
+        # # Run prediction
+        # predict(
+        #     model_type="ultralytics",
+        #     model_path=MODEL_MAP[selected_model],
+        #     model_device="cpu",
+        #     model_confidence_threshold=0.6,
+        #     source=input_dir,
+        #     slice_height=slice_size,
+        #     slice_width=slice_size,
+        #     overlap_height_ratio=0.45,
+        #     overlap_width_ratio=0.45,
+        #     export_txt=True
+        # )
+        with st.spinner("🧠 Running model inference... Please wait."):
+            st.info("\U0001F50D Inference started. Please wait...")
+            st.warning(f"\U0001F552 CPU inference. Estimated time: {estimated_minutes} minutes "
+                       f"({num_input_images} images, approx. {time_per_image} seconds per image)")
 
-        # Slice size
-        slice_size = 960 if "960" in selected_model else 640
+            # Slice size
+            slice_size = 960 if "960" in selected_model else 640
 
-        # Run prediction
-        predict(
-            model_type="ultralytics",
-            model_path=MODEL_MAP[selected_model],
-            model_device="cpu",
-            model_confidence_threshold=0.6,
-            source=input_dir,
-            slice_height=slice_size,
-            slice_width=slice_size,
-            overlap_height_ratio=0.45,
-            overlap_width_ratio=0.45,
-            export_txt=True
-        )
+            # Run prediction
+            predict(
+                model_type="ultralytics",
+                model_path=MODEL_MAP[selected_model],
+                model_device="cpu",
+                model_confidence_threshold=0.6,
+                source=input_dir,
+                slice_height=slice_size,
+                slice_width=slice_size,
+                overlap_height_ratio=0.45,
+                overlap_width_ratio=0.45,
+                export_txt=True
+            )
 
         # Result directories
         result_dir = "runs/predict/exp"
