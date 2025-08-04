@@ -22,6 +22,16 @@ os.makedirs(PERSISTENT_DIR, exist_ok=True)
 
 st.title("Canola Green Bud Detection (YOLOv11 (advanced) + SAHI)")
 st.markdown("Upload images or ZIP files, choose a model, and click Run to start inference.")
+# 添加下载按钮
+with open("demo.zip", "rb") as f:
+    zip_bytes = f.read()
+
+st.download_button(
+    label="⬇️ Download Demo ZIP File",
+    data=zip_bytes,
+    file_name="demo.zip",
+    mime="application/zip"
+)
 
 # File uploader (multi-file enabled)
 uploaded_files = st.file_uploader(
